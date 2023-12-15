@@ -1,0 +1,11 @@
+FROM httpd:latest
+
+RUN apt-get update && \
+    apt-get install -y jq && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV CGI_BIN /usr/local/apache2/cgi-bin
+WORKDIR $CGI_BIN
+COPY api.cgi .
+RUN chmod 0555 api.cgi
+ENTRYPOINT httpd-foreground -c "LoadModule cgid_module modules/mod_cgid.so"

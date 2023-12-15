@@ -1,0 +1,14 @@
+FROM ubuntu:latest
+
+RUN apt-get update && \
+    apt-get install -y socat jq && \
+    rm -rf /var/lib/apt/lists/* && \
+    useradd local
+
+WORKDIR /app
+USER local
+
+COPY --chown=local:local api.sh .
+RUN chmod 0500 api.sh
+
+CMD [ "socat", "tcp-listen:8080,reuseaddr,fork", "system:'./api.sh'" ]

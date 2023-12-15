@@ -1,0 +1,14 @@
+FROM ubuntu:latest
+
+RUN apt-get update && \
+    apt-get install -y lighttpd jq && \
+    rm -rf /var/lib/apt/lists/* && \
+    lighty-enable-mod cgi
+
+ENV CGI_BIN /usr/lib/cgi-bin
+WORKDIR $CGI_BIN
+
+COPY api.cgi .
+RUN chmod 0555 api.cgi
+
+ENTRYPOINT /usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf -D

@@ -1,0 +1,14 @@
+FROM ubuntu:latest
+
+RUN apt-get update && \
+    apt-get install -y ucspi-tcp jq && \
+    rm -rf /var/lib/apt/lists/* && \
+    useradd local
+
+WORKDIR /app
+USER local
+
+COPY --chown=local:local api.sh .
+RUN chmod 0500 api.sh
+
+CMD [ "tcpserver", "0.0.0.0", "8081", "./api.sh" ]
